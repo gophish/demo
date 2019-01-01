@@ -198,6 +198,7 @@ def open_email(campaign, result, user_agent=DEFAULT_USER_AGENT):
             create the event
     """
     print('Opening email for {}'.format(result.email))
+    sys.stdout.flush()
     return requests.get(
         '{}/track'.format(campaign.url),
         params={'rid': result.id},
@@ -221,6 +222,7 @@ def click_link(campaign, result, user_agent=DEFAULT_USER_AGENT):
             create the event
     """
     print('Clicking link for {}'.format(result.email))
+    sys.stdout.flush()
     return requests.get(
         campaign.url,
         params={'rid': result.id},
@@ -244,6 +246,7 @@ def submit_data(campaign, result, user_agent=DEFAULT_USER_AGENT):
             create the event
     """
     print('Submitting data for {}'.format(result.email))
+    sys.stdout.flush()
     return requests.post(
         campaign.url,
         params={'rid': result.id},
@@ -271,6 +274,7 @@ def report_email(campaign, result, user_agent=DEFAULT_USER_AGENT):
             create the event
     """
     print('Reporting email for {}'.format(result.email))
+    sys.stdout.flush()
     return requests.get(
         '{}/report'.format(campaign.url),
         params={'rid': result.id},
@@ -331,22 +335,27 @@ def main():
     api = Gophish(api_key=args.api_key, host=args.api_url, verify=False)
 
     # Generate our groups
-    print('Generating groups...')
+    print('Generating Groups...')
+    sys.stdout.flush()
     group_names = generate_groups(
         api, num_groups=args.num_groups, num_members=args.num_members)
     groups = [Group(name=group) for group in group_names]
 
     print('Generating SMTP')
+    sys.stdout.flush()
     smtp = generate_sending_profile(api, '{}:{}'.format(
         smtp.hostname, smtp.port))
 
     print('Generating Template')
+    sys.stdout.flush()
     template = generate_template(api)
 
     print('Generating Landing Page')
+    sys.stdout.flush()
     landing_page = generate_landing_page(api)
 
     print('Generating Campaigns')
+    sys.stdout.flush()
     campaign = Campaign(
         name='Demo Campaign',
         groups=groups,
@@ -366,7 +375,10 @@ def main():
                 )
                 print('Exiting...')
                 sys.exit(1)
-            print('Waiting for emails to finish sending...')
+            print(
+                'Waiting for mock emails to finish sending (this takes a few seconds)...'
+            )
+            sys.stdout.flush()
             time.sleep(1)
             continue
         break
@@ -378,6 +390,12 @@ def main():
         percent_clicked=args.percent_clicked,
         percent_submitted=args.percent_submitted,
         percent_reported=args.percent_reported)
+
+    print(
+        '\n\nAll set! You can now browse to {} to view the Gophish dashboard'.
+        format(args.api_url))
+    print('The credentials are admin:gophish')
+    print('Enjoy!')
 
 
 if __name__ == '__main__':
