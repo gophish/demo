@@ -298,6 +298,11 @@ def main():
         default='http://localhost',
         help='The URL pointing to the Gophish phishing server')
     parser.add_argument(
+        '--smtp-hostname',
+        type=str,
+        default='127.0.0.1',
+        help='The hostname to use for the null smtp, needs to be reachable from Gophish')
+    parser.add_argument(
         '--num-groups',
         type=int,
         default=10,
@@ -330,7 +335,7 @@ def main():
     args = parser.parse_args()
 
     # Start our null SMTP server
-    smtp = Controller(Sink(), hostname='127.0.0.1')
+    smtp = Controller(Sink(), hostname=args.smtp_hostname)
     smtp.start()
     api = Gophish(api_key=args.api_key, host=args.api_url, verify=False)
 
