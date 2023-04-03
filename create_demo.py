@@ -301,7 +301,7 @@ def main():
         '--smtp-hostname',
         type=str,
         default='127.0.0.1',
-        help='The URL pointing to the Gophish phishing server')
+        help='The hostname to use for the null smtp, needs to be reachable from Gophish')
     parser.add_argument(
         '--num-groups',
         type=int,
